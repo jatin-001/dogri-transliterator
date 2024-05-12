@@ -1,11 +1,9 @@
-package ru.homyakin.iuliia;
+package com.transliteration;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Schema {
@@ -17,7 +15,8 @@ public class Schema {
     private Map<String, String> prevMapping;
     private Map<String, String> nextMapping;
     private Map<String, String> endingMapping;
-
+    private Map<String, String> vowels;
+    private Map<String, String> mainVowels;
     public String getName() {
         return name;
     }
@@ -36,10 +35,22 @@ public class Schema {
     public String translateLetter(String prev, String curr, String next) {
         String letter = prevMapping.get(prev + curr);
         if (letter == null) {
-            letter = nextMapping.get(curr + next);
+            if (prev.equals(" ") || prev.equals("")) {
+                letter = mainVowels.get(curr + next) == null ? mainVowels.get(curr) : mainVowels.get(curr + next) ;
+            }
         }
         if (letter == null) {
-            letter = mapping.getOrDefault(curr, curr);
+            if (vowels.get(next) != null && !List.of("ee", "oo", "ai", "au", "ah").contains(curr + next)) {
+                if (List.of("i").contains(next)) {
+                    letter = vowels.get(next) + mapping.getOrDefault(curr, "");
+                } else
+                    letter = mapping.getOrDefault(curr, "") + vowels.get(next);
+            } else {
+                letter = nextMapping.get(curr + next);
+            }
+        }
+        if (letter == null) {
+            letter = mapping.getOrDefault(curr, "");
         }
         return letter;
     }
@@ -54,6 +65,19 @@ public class Schema {
                 mapping.put(capitalize(entry.getKey()), capitalize(entry.getValue()));
             }
             this.mapping = mapping;
+        }
+    }
+
+    @JsonProperty("vowels")
+    private void unpackVowels(Map<String, String> vowels) {
+        if (vowels == null) {
+            this.vowels = new HashMap<>();
+        } else {
+            var entrySet = new HashSet<>(vowels.entrySet());
+            for (var entry : entrySet) {
+                vowels.put(entry.getKey(), entry.getValue());
+            }
+            this.vowels = vowels;
         }
     }
 
@@ -95,6 +119,19 @@ public class Schema {
                 endingMapping.put(entry.getKey().toUpperCase(), entry.getValue().toUpperCase());
             }
             this.endingMapping = endingMapping;
+        }
+    }
+
+    @JsonProperty("main_vowels")
+    private void unpackMainVowels(Map<String, String> mainVowels) {
+        if (mainVowels == null) {
+            this.mainVowels = new HashMap<>();
+        } else {
+            var entrySet = new HashSet<>(mainVowels.entrySet());
+            for (var entry : entrySet) {
+                mainVowels.put(entry.getKey(), entry.getValue());
+            }
+            this.mainVowels = mainVowels;
         }
     }
 

@@ -1,8 +1,0 @@
-{
-  "name": "test",
-  "description": "Test schema",
-  "mapping": {},
-  "prev_mapping": null,
-  "next_mapping": null,
-  "ending_mapping": {"ia": "ya"}
-}

@@ -2,33 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.homyakin</groupId>
-    <artifactId>iuliia-java</artifactId>
+    <groupId>com.tranliteration</groupId>
+    <artifactId>dogri-transliterator</artifactId>
     <version>1.9-SNAPSHOT</version>
 
-    <name>iuliia-java</name>
-    <description>Transliterate Cyrillic → Latin in every possible way</description>
-    <url>https://github.com/Homyakin/iuliia-java</url>
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <url>https://github.com/Homyakin/iuliia-java</url>
-        <connection>scm:git:git://github.com/Homyakin/iuliia-java</connection>
-        <developerConnection>scm:git:git@github.com:Homyakin/iuliia-java</developerConnection>
-    </scm>
+    <name>dogri-transliterator</name>
+    <description>Transliterate English → Dogri in every possible way</description>
+    <url>https://github.com/jatin-001/dogri-transliterator</url>
 
     <developers>
         <developer>
-            <id>Homyakin</id>
-            <name>Anton Lavrentev</name>
-            <url>homyakin.ru</url>
+            <id>Jatin</id>
+            <name>Jatin Agrawal</name>
         </developer>
     </developers>
 
@@ -74,12 +59,37 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jolira/onejar-maven-plugin -->
+        <dependency>
+            <groupId>com.jolira</groupId>
+            <artifactId>onejar-maven-plugin</artifactId>
+            <version>1.4.4</version>
+        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>com.jolira</groupId>
+                <artifactId>onejar-maven-plugin</artifactId>
+                <version>1.4.4</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <mainClass>ru.homyakin.iuliia.GetCharacterFromUnicode</mainClass>
+                            <attachToBuild>true</attachToBuild>
+                            <filename>
+                                ${project.build.finalName}.${project.packaging}
+                            </filename>
+                        </configuration>
+                        <goals>
+                            <goal>one-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>

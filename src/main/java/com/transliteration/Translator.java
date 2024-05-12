@@ -1,4 +1,4 @@
-package ru.homyakin.iuliia;
+package com.transliteration;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -44,7 +44,15 @@ public class Translator {
         String next = "";
         int length = word.length();
         var translated = new StringBuilder();
-        for (int i = 0; i < length; ++i) {
+        for (int i=0; i < length; ) {
+            if (word.charAt(i) == ' ') {
+                translated.append(" ");
+                prev="";
+                curr="";
+                next="";
+                ++i;
+                continue;
+            }
             if (!curr.equals("")) {
                 prev = curr;
             }
@@ -58,7 +66,15 @@ public class Translator {
             } else {
                 next = "";
             }
-            translated.append(schema.translateLetter(prev, curr, next));
+            String str = schema.translateLetter(prev, curr, next);
+            translated.append(str);
+            int skip = Math.max(str.length() / 2, 1);
+            i = i + skip;
+            if (skip > 1) {
+                prev = "";
+                curr = "";
+                next = "";
+            }
         }
         return translated.toString();
     }
